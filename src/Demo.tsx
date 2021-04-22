@@ -24,9 +24,22 @@ import intel from './intel-header-logo.svg'
 import MoveToInboxIcon from '@material-ui/icons/MoveToInbox';
 import HeaderProfile from './HeaderProfile'
 import HeaderSearch from './HeaderSearch'
+import { NavLink } from "react-router-dom";
+import { SvgIconTypeMap } from '@material-ui/core';
+import { OverridableComponent } from '@material-ui/core/OverridableComponent';
 
-const drawerWidth = 240;
 
+type route = {
+    path: string;
+    sidebarName: string;
+    icon: OverridableComponent<SvgIconTypeMap<{}, "svg">>;
+    component: () => JSX.Element;
+}[]
+type prop = {
+  routes : route
+}
+
+const drawerWidth = 180;
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -54,7 +67,7 @@ const useStyles = makeStyles((theme: Theme) =>
       whiteSpace: 'nowrap',
     },
     drawerOpen: {
-      width: drawerWidth,
+      width: drawerWidth+10,
       transition: theme.transitions.create('width', {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.enteringScreen,
@@ -98,8 +111,9 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-export default function MiniDrawer() {
+export default function MiniDrawer(route:prop) {
   const classes = useStyles();
+  const routes = route['routes']
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
 
@@ -169,50 +183,41 @@ export default function MiniDrawer() {
           </IconButton> */}
         </div>
         <Divider />
-        <List>
+        <div className={classes.root}>
+          <List component="nav" aria-label="main mailbox folders" style={{ width:'100%' }}>
+            {routes.map(({ path, sidebarName, ...prop }, index) => {
+
+              return (
+                <NavLink to={path} key={`route-${index}}`} style={{ textDecoration: 'none'}}>
+                  <ListItem button key={sidebarName}>
+                    <ListItemIcon style={{ color: '#fff' }}>
+                      <prop.icon style={{ color: '#fff' }}/>
+                    </ListItemIcon>
+                    <ListItemText primary={sidebarName} style={{ color: '#fff' }} />
+                  </ListItem>
+                </NavLink>
+              );
+            })}
+          </List>
+        </div>
+        {/* <List>
           {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
             <ListItem button key={text}>
               <ListItemIcon >{index % 2 === 0 ? <MoveToInboxIcon style={{ color: '#fff' }}/> : <MailIcon style={{ color: '#fff' }}/>}</ListItemIcon>
               <ListItemText primary={text} />
             </ListItem>
           ))}
-        </List>
+        </List> */}
         <Divider />
-        <List>
+        {/* <List>
           {['All mail', 'Trash', 'Spam'].map((text, index) => (
             <ListItem button key={text}>
               <ListItemIcon>{index % 2 === 0 ? <InboxIcon style={{ color: '#fff' }}/> : <MailIcon style={{ color: '#fff' }}/>}</ListItemIcon>
               <ListItemText primary={text} />
             </ListItem>
           ))}
-        </List>
+        </List> */}
       </Drawer>
-      <main className={classes.content}>
-        <div className={classes.toolbar} />
-        <Typography paragraph>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
-          ut labore et dolore magna aliqua. Rhoncus dolor purus non enim praesent elementum
-          facilisis leo vel. Risus at ultrices mi tempus imperdiet. Semper risus in hendrerit
-          gravida rutrum quisque non tellus. Convallis convallis tellus id interdum velit laoreet id
-          donec ultrices. Odio morbi quis commodo odio aenean sed adipiscing. Amet nisl suscipit
-          adipiscing bibendum est ultricies integer quis. Cursus euismod quis viverra nibh cras.
-          Metus vulputate eu scelerisque felis imperdiet proin fermentum leo. Mauris commodo quis
-          imperdiet massa tincidunt. Cras tincidunt lobortis feugiat vivamus at augue. At augue eget
-          arcu dictum varius duis at consectetur lorem. Velit sed ullamcorper morbi tincidunt. Lorem
-          donec massa sapien faucibus et molestie ac.
-        </Typography>
-        <Typography paragraph>
-          Consequat mauris nunc congue nisi vitae suscipit. Fringilla est ullamcorper eget nulla
-          facilisi etiam dignissim diam. Pulvinar elementum integer enim neque volutpat ac
-          tincidunt. Ornare suspendisse sed nisi lacus sed viverra tellus. Purus sit amet volutpat
-          consequat mauris. Elementum eu facilisis sed odio morbi. Euismod lacinia at quis risus sed
-          vulputate odio. Morbi tincidunt ornare massa eget egestas purus viverra accumsan in. In
-          hendrerit gravida rutrum quisque non tellus orci ac. Pellentesque nec nam aliquam sem et
-          tortor. Habitant morbi tristique senectus et. Adipiscing elit duis tristique sollicitudin
-          nibh sit. Ornare aenean euismod elementum nisi quis eleifend. Commodo viverra maecenas
-          accumsan lacus vel facilisis. Nulla posuere sollicitudin aliquam ultrices sagittis orci a.
-        </Typography>
-      </main>
-    </div>
+      </div>
   );
 }
