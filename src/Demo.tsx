@@ -191,7 +191,7 @@ export default function MiniDrawer(route:prop) {
                 <NavLink to={path} key={`route-${index}}`} style={{ textDecoration: 'none'}}>
                   <ListItem button key={sidebarName}>
                     <ListItemIcon style={{ color: '#fff' }}>
-                      <prop.icon style={{ color: '#fff' }}/>
+                      <prop.icon />
                     </ListItemIcon>
                     <ListItemText primary={sidebarName} style={{ color: '#fff' }} />
                   </ListItem>
